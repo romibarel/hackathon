@@ -8,9 +8,10 @@ from random import randint
 # this is our ip address
 ip = "127.0.0.1"
 UDP_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-UDP_sock.bind((ip, 2084))
+UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+UDP_sock.bind(("", 2084))
 TCP_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-TCP_socket.bind((ip, 2084))
+TCP_socket.bind(("", 2084))
 TCP_socket.setblocking(False)
 group1 = list()
 group2 = list()

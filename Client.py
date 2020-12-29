@@ -1,13 +1,17 @@
 import socket
 import sys
+import os
 import time
-import msvcrt
+import getch
 
 # this is our ip address
 ip = "127.0.0.1"
 port = 7777
 UDP_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-UDP_sock.bind((ip, 13117))
+UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+UDP_sock.bind(("", 13117))
 
 
 def start_game(TCP_socket):
@@ -19,10 +23,9 @@ def start_game(TCP_socket):
     stop = now + 10
     while time.time() < stop:
         print("im in while")
-        c = msvcrt.getch()
-        print(c)
+        c = getch.getch()
         if time.time() < stop:
-            TCP_socket.send(c)
+            TCP_socket.send(c.encode('ascii'))
     print("im not in while")
     message = TCP_socket.recv(2048)
     if not message:
@@ -34,7 +37,9 @@ def main():
     print("Client started, listening for offer requests...")
     while True:
         TCP_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        TCP_socket.bind((ip, port))
+        TCP_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        TCP_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        TCP_socket.bind(("", port))
         data, addr = UDP_sock.recvfrom(7)
         if not data:
             continue
