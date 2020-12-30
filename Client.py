@@ -35,7 +35,7 @@ def main():
         UDP_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        UDP_sock.bind((ip, 13117))
+        UDP_sock.bind(("172.1.255.255", 13117))
         TCP_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         TCP_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         #TCP_socket.bind((ip, port))
