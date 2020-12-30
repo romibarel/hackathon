@@ -36,12 +36,12 @@ def main():
         UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         UDP_sock.bind((ip, 13117))
         TCP_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #TCP_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         #TCP_socket.bind((ip, port))
         data, addr = UDP_sock.recvfrom(7)
         if not data:
             continue
         UDP_sock.close()
+        #decode the data
         magic_cookie = data[:4]
         message_type = data[4:5]
         server_port = int.from_bytes(data[-2:], byteorder='big')
