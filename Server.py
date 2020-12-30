@@ -38,7 +38,7 @@ def send():
             # Server port (2 bytes): The port on the server that the client is supposed to connect to over
             # TCP (the IP address of the server is the same for the UDP and TCP connections,
             # so it doesn't need to be sent).
-            UDP_sock.sendto(b'\xfe\xed\xbe\xef\x02\x08\x24', ("172.1.255.255", 13117))
+            UDP_sock.sendto(b'\xfe\xed\xbe\xef\x02\x08\x24', (ip, 13117))
             time.sleep(1)
     except:
         print("something went wrong in sending offers")
@@ -191,12 +191,12 @@ def main():
     # plant seed to generate random integers
     seed(1)
     while True:
-        #try:
+        try:
             send_invites()
             start_game()
-        #except:
+        except:
         #    print("something went wrong in main")
-        #    break
+            break
 
 
 if __name__ == '__main__':
