@@ -34,8 +34,10 @@ def main():
     while True:
         UDP_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         UDP_sock.bind((ip, 13117))
         TCP_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        TCP_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         #TCP_socket.bind((ip, port))
         data, addr = UDP_sock.recvfrom(7)
         if not data:
@@ -45,7 +47,6 @@ def main():
         magic_cookie = data[:4]
         message_type = data[4:5]
         server_port = int.from_bytes(data[-2:], byteorder='big')
-
         #make sure the offer is valid
         if int.from_bytes(magic_cookie, 'big') != int.from_bytes(b'\xfe\xed\xbe\xef', 'big') | int.from_bytes(message_type, 'big') != int.from_bytes(b'\x02', 'big'):
             continue

@@ -9,7 +9,10 @@ from colorama import Fore, Back, Style
 
 # this is our ip address
 ip = get_if_addr('eth1')
+print(ip)
 UDP_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 UDP_sock.bind((ip, 2084))
 TCP_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 TCP_socket.bind((ip, 2084))
