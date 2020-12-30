@@ -70,10 +70,8 @@ def server_listen():
                     chance = randint(0, 1)
                     if chance == 0:
                         group1.append((name, client_socket, addr))
-                        print(name + " group 1 " + str(len(group1)))
                     else:
                         group2.append((name, client_socket, addr))
-                        print(name + " group 2 " + str(len(group2)))
                     in_progress = False
 
     except:
@@ -90,10 +88,8 @@ def send_invites():
 
 
 def start_game():
-    print("started game - server")
     score1[0] = 0
     score2[0] = 0
-    print(str(score1[0]) +" "+ str(score2[0]))
     message = Fore.MAGENTA + "Welcome to Keyboard Spamming Battle Royale.\n" + Fore.BLUE + "Group 1:\n==\n"
     # t = (name, client_socket, addr)
     for t in group1:
@@ -104,22 +100,17 @@ def start_game():
         message += Fore.YELLOW + t[0] + "\n"
 
     message += Fore.MAGENTA +  "\nStart pressing keys on your keyboard as fast as you can!!\n" + Fore.RESET
-    print(message)
     # for each team in both groups start catching keys
     for t in group1:
         client_threads.append(threading.Thread(target=catch_keys, args=(t, message, 1,)))
 
     for t in group2:
         client_threads.append(threading.Thread(target=catch_keys, args=(t, message, 2,)))
-    print(str(len(client_threads)))
 
     # start all the threads and wait for all of them to end
     for t in client_threads:
-        print("hi im starting")
         t.start()
-        print("hi i started")
     for t in client_threads:
-        print("im waiting")
         t.join()
 
     end_message = Fore.RED + "Game over!\n"
@@ -156,7 +147,6 @@ def start_game():
 
 # client_tuple = (name, client_socket, addr)
 def end_game(client_tuple, message):
-    print(message)
     try:
         client_socket = client_tuple[1]
         client_socket.send(str(message).encode('ascii'))
@@ -167,7 +157,6 @@ def end_game(client_tuple, message):
 
 # client_tuple = (name, client_socket, addr)
 def catch_keys(client_tuple, message, group):
-    print("hi im catch keys")
     try:
         counter = 0
         client_socket = client_tuple[1]
@@ -182,7 +171,6 @@ def catch_keys(client_tuple, message, group):
                 continue
             if not key:
                 break
-            print(key)
             counter += 1
         if group == 1:
             thread_lock1.acquire()

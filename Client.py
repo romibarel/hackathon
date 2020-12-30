@@ -12,7 +12,6 @@ ip = get_if_addr('eth1')
 port = 13117
 
 
-
 def start_game(TCP_socket):
     message = TCP_socket.recv(2048)
     if not message:
@@ -21,11 +20,9 @@ def start_game(TCP_socket):
     now = time.time()
     stop = now + 10
     while time.time() < stop:
-        print("im in while")
         c = getch.getch()
         if time.time() < stop:
             TCP_socket.send(c.encode('ascii'))
-    print("im not in while")
     message = TCP_socket.recv(2048)
     if not message:
         return
