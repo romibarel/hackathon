@@ -1,7 +1,1 @@
-import sys
-count =0
-while True:
-
-    c = sys.stdin.read(1) # reads one byte at a time, similar to getchar()
-    count += 1
-    print(count)
+print("\033[1;32;40m Bright Green  \n")

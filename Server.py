@@ -1,4 +1,5 @@
 import socket
+from scapy.arch import get_if_addr
 import time
 import threading
 from random import seed
@@ -6,12 +7,11 @@ from random import randint
 
 
 # this is our ip address
-ip = "127.0.0.1"
+ip = get_if_addr('eth1')
 UDP_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-UDP_sock.bind(("", 2084))
+UDP_sock.bind((ip, 2084))
 TCP_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-TCP_socket.bind(("", 2084))
+TCP_socket.bind((ip, 2084))
 TCP_socket.setblocking(False)
 group1 = list()
 group2 = list()
@@ -50,10 +50,12 @@ def server_listen():
                 client_socket, addr = TCP_socket.accept()
                 client_socket.setblocking(False)
             except:
+                time.sleep(0.01)
                 continue
             # with client_socket:
             name = ""
-            while True:
+            in_progress = True
+            while in_progress:
                 # put together the name of the tea
                 try:
                     next_char = client_socket.recv(1)
@@ -71,7 +73,7 @@ def server_listen():
                     else:
                         group2.append((name, client_socket, addr))
                         print(name + " group 2 " + str(len(group2)))
-                    break
+                    in_progress = False
 
     except:
         print("something went wrong in listening ")
@@ -175,6 +177,7 @@ def catch_keys(client_tuple, message, group):
             try:
                 key = client_socket.recv(1)
             except:
+                time.sleep(0.001)
                 continue
             if not key:
                 break
@@ -201,6 +204,7 @@ def main():
             start_game()
         except:
             print("something went wrong in main")
+            break
 
 
 if __name__ == '__main__':

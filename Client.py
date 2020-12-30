@@ -3,15 +3,12 @@ import sys
 import os
 import time
 import getch
+from scapy.arch import get_if_addr
 
 # this is our ip address
-ip = "127.0.0.1"
-port = 7777
-UDP_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-UDP_sock.bind(("", 13117))
+ip = get_if_addr('eth1')
+port = 13117
+
 
 
 def start_game(TCP_socket):
@@ -36,24 +33,27 @@ def start_game(TCP_socket):
 def main():
     print("Client started, listening for offer requests...")
     while True:
+        UDP_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        UDP_sock.bind((ip, 13117))
         TCP_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        TCP_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        TCP_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-        TCP_socket.bind(("", port))
+        #TCP_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        #TCP_socket.bind((ip, port))
         data, addr = UDP_sock.recvfrom(7)
         if not data:
             continue
+        UDP_sock.close()
         magic_cookie = data[:4]
         message_type = data[4:5]
         server_port = int.from_bytes(data[-2:], byteorder='big')
 
-        # make sure the offer is valid
+        #make sure the offer is valid
         if int.from_bytes(magic_cookie, 'big') != int.from_bytes(b'\xfe\xed\xbe\xef', 'big') | int.from_bytes(message_type, 'big') != int.from_bytes(b'\x02', 'big'):
             continue
 
         print("Received offer from "+addr[0]+", attempting to connect...")
         TCP_socket.connect((addr[0], server_port))
-        TCP_socket.send("Bytes Hunters\n".encode('ascii'))
+        TCP_socket.send("Cookie Monsters\n".encode('ascii'))
 
         start_game(TCP_socket)
         print("Server disconnected, listening for offer requests...")
