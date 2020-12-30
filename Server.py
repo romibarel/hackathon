@@ -125,11 +125,11 @@ def start_game():
     end_message = Fore.RED + "Game over!\n"
                   
     if score1[0] > score2[0]:
-        end_message += Fore.RESET + "Group 1 typed in " + Fore.Green + str(score1[0]) + Fore.RESET + " characters. Group 2 typed in " + Fore.RED + str(score2[0]) + Fore.RESET + " characters.\n" + Fore.Green + "Group 1 wins!\n\nCongratulations to the winners:\n==" + Fore.RESET
+        end_message += Fore.RESET + "Group 1 typed in " + Fore.GREEN + str(score1[0]) + Fore.RESET + " characters. Group 2 typed in " + Fore.RED + str(score2[0]) + Fore.RESET + " characters.\n" + Fore.GREEN + "Group 1 wins!\n\nCongratulations to the winners:\n==" + Fore.RESET
         for t in group1:
             end_message += "\n" + t[0]
     elif score1[0] < score2[0]:
-        end_message += Fore.RESET + "Group 1 typed in " + Fore.RED + str(score1[0]) + Fore.RESET + " characters. Group 2 typed in " + Fore.GREEN + str(score2[0]) + Fore.RESET + " characters.\n" + Fore.RED + "Group 1 wins!\n\nCongratulations to the winners:\n==" + Fore.RESET
+        end_message += Fore.RESET + "Group 1 typed in " + Fore.RED + str(score1[0]) + Fore.RESET + " characters. Group 2 typed in " + Fore.GREEN + str(score2[0]) + Fore.RESET + " characters.\n" + Fore.RED + "Group 2 wins!\n\nCongratulations to the winners:\n==" + Fore.RESET
         for t in group2:
             end_message += "\n" + t[0]
     else:
@@ -151,7 +151,7 @@ def start_game():
     group1.clear()
     group2.clear()
     client_threads.clear()
-    print(Fore.RED + "Game over, sending out offer requests...") + Fore.RESET
+    print(Fore.RED + "Game over, sending out offer requests..." + Fore.RESET)
 
 
 # client_tuple = (name, client_socket, addr)
@@ -200,12 +200,12 @@ def main():
     # plant seed to generate random integers
     seed(1)
     while True:
-        try:
+        #try:
             send_invites()
             start_game()
-        except:
-            print("something went wrong in main")
-            break
+        #except:
+        #    print("something went wrong in main")
+        #    break
 
 
 if __name__ == '__main__':
