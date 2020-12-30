@@ -4,6 +4,8 @@ import os
 import time
 import getch
 from scapy.arch import get_if_addr
+from colorama import *
+
 
 # this is our ip address
 ip = get_if_addr('eth1')

@@ -4,6 +4,7 @@ import time
 import threading
 from random import seed
 from random import randint
+from colorama import Fore, Back, Style
 
 
 # this is our ip address
@@ -93,16 +94,16 @@ def start_game():
     score1[0] = 0
     score2[0] = 0
     print(str(score1[0]) +" "+ str(score2[0]))
-    message = "Welcome to Keyboard Spamming Battle Royale.\nGroup 1:\n==\n"
+    message = Fore.MAGENTA + "Welcome to Keyboard Spamming Battle Royale.\n" + Fore.BLUE + "Group 1:\n==\n"
     # t = (name, client_socket, addr)
     for t in group1:
-        message += t[0] + "\n"
+        message += Fore.BLUE + t[0] + "\n"
 
-    message += "Group 2:\n==\n"
+    message += Fore.YELLOW + "Group 2:\n==\n"
     for t in group2:
-        message += t[0] + "\n"
+        message += Fore.YELLOW + t[0] + "\n"
 
-    message += "\nStart pressing keys on your keyboard as fast as you can!!\n"
+    message += Fore.MAGENTA +  "\nStart pressing keys on your keyboard as fast as you can!!\n" + Fore.RESET
     print(message)
     # for each team in both groups start catching keys
     for t in group1:
@@ -121,18 +122,18 @@ def start_game():
         print("im waiting")
         t.join()
 
-    end_message = "Game over!\nGroup 1 typed in "+str(score1[0])+" characters. Group 2 typed in "+str(score2[0]) + \
-                  " characters.\n"
+    end_message = Fore.RED + "Game over!\n"
+                  
     if score1[0] > score2[0]:
-        end_message += "Group 1 wins!\n\nCongratulations to the winners:\n=="
+        end_message += Fore.RESET + "Group 1 typed in " + Fore.Green + str(score1[0]) + Fore.RESET + " characters. Group 2 typed in " + Fore.RED + str(score2[0]) + Fore.RESET + " characters.\n" + Fore.Green + "Group 1 wins!\n\nCongratulations to the winners:\n==" + Fore.RESET
         for t in group1:
             end_message += "\n" + t[0]
     elif score1[0] < score2[0]:
-        end_message += "Group 2 wins!\n\nCongratulations to the winners:\n=="
+        end_message += Fore.RESET + "Group 1 typed in " + Fore.RED + str(score1[0]) + Fore.RESET + " characters. Group 2 typed in " + Fore.GREEN + str(score2[0]) + Fore.RESET + " characters.\n" + Fore.RED + "Group 1 wins!\n\nCongratulations to the winners:\n==" + Fore.RESET
         for t in group2:
             end_message += "\n" + t[0]
     else:
-        end_message += "IT'S A TIE!!!\nCongratulations to EVERYONE!!!!!"
+        end_message += Fore.RED +  "IT'S A TIE!!!\nCongratulations to EVERYONE!!!!!" + Fore.RESET
 
     # create new threads to share the results
     client_threads.clear()
@@ -150,7 +151,7 @@ def start_game():
     group1.clear()
     group2.clear()
     client_threads.clear()
-    print("Game over, sending out offer requests...")
+    print(Fore.RED + "Game over, sending out offer requests...") + Fore.RESET
 
 
 # client_tuple = (name, client_socket, addr)
