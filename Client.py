@@ -9,10 +9,14 @@ from colorama import *
 
 # this is our ip address
 ip = get_if_addr('eth1')
-port = 13117
+port_general = 13117
+our_port = 2084
+general_UDP_network = "172.1.255.255"
 
 
+#this function manages the game mode in the client
 def start_game(TCP_socket):
+    #2048 is max number of bytes to receive at once, no to be confused with our port
     message = TCP_socket.recv(2048)
     if not message:
         return
@@ -32,13 +36,13 @@ def start_game(TCP_socket):
 def main():
     print("Client started, listening for offer requests...")
     while True:
+        #opening the UDP and TCP connections 
         UDP_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        UDP_sock.bind(("172.1.255.255", 13117))
+        UDP_sock.bind((general_UDP_network, port_general))
         TCP_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         TCP_socket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        #TCP_socket.bind((ip, port))
         data, addr = UDP_sock.recvfrom(7)
         if not data:
             continue

@@ -7,16 +7,23 @@ from random import randint
 from colorama import Fore, Back, Style
 
 
-# this is our ip address
-ip = get_if_addr('eth1')
-print(ip)
+#to avoid hard coded things, this is how we get the addresses
+connection_name = 'eth1'
+port = 2084
+ip = get_if_addr(connection_name)
+port_general = 13117
+general_UDP_network = "172.1.255.255"
+
+#opening the UDP and TCP connections
 UDP_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 UDP_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-UDP_sock.bind((ip, 2084))
+UDP_sock.bind((ip, port))
 TCP_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-TCP_socket.bind((ip, 2084))
+TCP_socket.bind((ip, port))
 TCP_socket.setblocking(False)
+
+#setting up the basis for the game
 group1 = list()
 group2 = list()
 client_threads = list()
@@ -38,12 +45,13 @@ def send():
             # Server port (2 bytes): The port on the server that the client is supposed to connect to over
             # TCP (the IP address of the server is the same for the UDP and TCP connections,
             # so it doesn't need to be sent).
-            UDP_sock.sendto(b'\xfe\xed\xbe\xef\x02\x08\x24', ("172.1.255.255", 13117))
+            UDP_sock.sendto(b'\xfe\xed\xbe\xef\x02\x08\x24', (general_UDP_network, port_general))
             time.sleep(1)
     except:
         print("something went wrong in sending offers")
 
 
+#this function is used by the listening thread to accept all the players
 def server_listen():
     try:
         TCP_socket.listen()
@@ -56,11 +64,10 @@ def server_listen():
             except:
                 time.sleep(0.01)
                 continue
-            # with client_socket:
             name = ""
             in_progress = True
             while in_progress:
-                # put together the name of the tea
+                # put together the name of the team
                 try:
                     next_char = client_socket.recv(1)
                 except:
@@ -81,6 +88,7 @@ def server_listen():
         print("something went wrong in listening ")
 
 
+#start inviting and accepting players
 def send_invites():
     sending = threading.Thread(target=send, args=())
     listening = threading.Thread(target=server_listen, args=())
@@ -148,6 +156,7 @@ def start_game():
     print(Fore.RED + "Game over, sending out offer requests..." + Fore.RESET)
 
 
+# send out results to the players
 # client_tuple = (name, client_socket, addr)
 def end_game(client_tuple, message):
     try:
@@ -158,6 +167,7 @@ def end_game(client_tuple, message):
         print("something went wrong in ending the game")
 
 
+# calculate each team's score by receiving their keys
 # client_tuple = (name, client_socket, addr)
 def catch_keys(client_tuple, message, group):
     try:
@@ -175,6 +185,7 @@ def catch_keys(client_tuple, message, group):
             if not key:
                 break
             counter += 1
+        #synchronize the scores so they don't get messed up
         if group == 1:
             thread_lock1.acquire()
             score1[0] += counter
